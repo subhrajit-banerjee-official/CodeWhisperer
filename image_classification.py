@@ -1,4 +1,5 @@
 import torch
+import os
 from torch import nn
 from torchvision import transforms, datasets
 
@@ -10,13 +11,28 @@ data_transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+# Get the current working directory
+current_directory = os.getcwd()
+
+# Construct a relative path
+train_folder = "/data/train"
+val_folder = "/data/val"
+
+# Join the current directory and relative path to create an absolute path
+data_train = current_directory+train_folder
+data_val = current_directory +val_folder
+
+print(f'train_data: {data_train} val_data: {data_val}  current_directory: {current_directory}')
+
 # Load the training and validation data
-train_data = datasets.ImageFolder(root='/Users/subh1461/Desktop/Gen AI Roadshow/CodeWhisperer/data/train', transform=data_transform)
-val_data = datasets.ImageFolder(root='/Users/subh1461/Desktop/Gen AI Roadshow/CodeWhisperer/data/val', transform=data_transform)
+train_data = datasets.ImageFolder(root=data_train, transform=data_transform)
+val_data = datasets.ImageFolder(root=data_val, transform=data_transform)
+
 
 # Create data loaders for training and validation data
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=64, shuffle=True)
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=64)
+
 
 # Define the neural network architecture
 class Net(nn.Module):
@@ -26,7 +42,7 @@ class Net(nn.Module):
         self.conv2 = nn.Conv2d(32, 64, kernel_size=3, padding=1)
         self.conv3 = nn.Conv2d(64, 128, kernel_size=3, padding=1)
         self.fc1 = nn.Linear(28 * 28 * 128, 1024)
-        self.fc2 = nn.Linear(1024, 10)
+        self.fc2 = nn.Linear(1024, 50)
 
     def forward(self, x):
         x = nn.functional.relu(self.conv1(x))
@@ -48,7 +64,9 @@ criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 
 # Train the model
-for epoch in range(10):
+#for epoch in range(10):
+
+for epoch in range(50):
     running_loss = 0.0
     for images, labels in train_loader:
         optimizer.zero_grad()
