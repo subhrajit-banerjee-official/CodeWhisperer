@@ -22,7 +22,7 @@ val_folder = "/data/val"
 data_train = current_directory+train_folder
 data_val = current_directory +val_folder
 
-print(f'train_data: {data_train} val_data: {data_val}  current_directory: {current_directory}')
+#print(f'train_data: {data_train} val_data: {data_val}  current_directory: {current_directory}')
 
 # Load the training and validation data
 train_data = datasets.ImageFolder(root=data_train, transform=data_transform)
@@ -34,7 +34,7 @@ train_loader = torch.utils.data.DataLoader(train_data, batch_size=64, shuffle=Tr
 val_loader = torch.utils.data.DataLoader(val_data, batch_size=64)
 
 
-# Define the neural network architecture
+# Define the convolutional neural network (CNN) architecture
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
@@ -44,6 +44,8 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(28 * 28 * 128, 1024)
         self.fc2 = nn.Linear(1024, 50)
 
+    #The Rectified Linear Unit (ReLU) is an activation function used in neural network. 
+    #It’s a non-linear function that outputs the input directly if it is positive; otherwise, it outputs zero.
     def forward(self, x):
         x = nn.functional.relu(self.conv1(x))
         x = nn.functional.max_pool2d(x, 2)
@@ -66,7 +68,7 @@ optimizer = torch.optim.SGD(model.parameters(), lr=0.001)
 # Train the model
 #for epoch in range(10):
 
-for epoch in range(50):
+for epoch in range(5):
     running_loss = 0.0
     for images, labels in train_loader:
         optimizer.zero_grad()
